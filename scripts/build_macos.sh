@@ -18,7 +18,6 @@ if [[ "$ICON_PATH" != /* ]]; then
   ICON_PATH="$ROOT_DIR/$ICON_PATH"
 fi
 
-PYTHON="${PYTHON:-$ROOT_DIR/.venv/bin/python}"
 if [[ ! -x "$PYTHON" ]]; then
   echo "Python not found (set PYTHON=...): $PYTHON" >&2
   exit 1
