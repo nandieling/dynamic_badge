@@ -7,9 +7,10 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from PySide6.QtCore import QProcess, QPointF, QRectF, Qt, QUrl
+from PySide6.QtCore import QProcess, QPointF, QRectF, QSizeF, Qt, QUrl
 from PySide6.QtGui import QBrush, QMovie, QPainter, QPen, QPixmap
-from PySide6.QtMultimedia import QMediaPlayer, QVideoSink
+from PySide6.QtMultimedia import QMediaPlayer
+from PySide6.QtMultimediaWidgets import QGraphicsVideoItem
 from PySide6.QtWidgets import (
     QApplication,
     QCheckBox,
@@ -40,11 +41,33 @@ def find_ffmpeg_tool(tool_name: str) -> str | None:
         if found:
             return found
 
+    suffixes = ("", ".exe")
+    candidates: list[Path] = []
+
     script_dir = Path(__file__).resolve().parent
-    for suffix in ("", ".exe"):
-        local = script_dir / f"{tool_name}{suffix}"
-        if local.exists():
-            return str(local)
+    for suffix in suffixes:
+        candidates.append(script_dir / f"{tool_name}{suffix}")
+
+    exe_dir = Path(sys.executable).resolve().parent
+    for suffix in suffixes:
+        candidates.append(exe_dir / f"{tool_name}{suffix}")
+        candidates.append(exe_dir.parent / "Resources" / f"{tool_name}{suffix}")
+        candidates.append(exe_dir.parent / "Frameworks" / f"{tool_name}{suffix}")
+
+    meipass = getattr(sys, "_MEIPASS", None)
+    if meipass:
+        base = Path(meipass)
+        for suffix in suffixes:
+            candidates.append(base / f"{tool_name}{suffix}")
+
+    for prefix in ("/opt/homebrew/bin", "/usr/local/bin"):
+        base = Path(prefix)
+        for suffix in suffixes:
+            candidates.append(base / f"{tool_name}{suffix}")
+
+    for path in candidates:
+        if path.is_file():
+            return str(path)
     return None
 
 
@@ -342,13 +365,17 @@ class MainWindow(QMainWindow):
             pass
 
         self._scene = QGraphicsScene(self)
+
+        self._video_item = QGraphicsVideoItem()
+        self._video_item.setZValue(0)
+        self._scene.addItem(self._video_item)
+
         self._video_pixmap_item = QGraphicsPixmapItem()
-        self._video_pixmap_item.setZValue(0)
+        self._video_pixmap_item.setZValue(1)
+        self._video_pixmap_item.setVisible(False)
         self._scene.addItem(self._video_pixmap_item)
 
-        self._video_sink = QVideoSink(self)
-        self._video_sink.videoFrameChanged.connect(self._on_video_frame_changed)
-        self._player.setVideoOutput(self._video_sink)
+        self._player.setVideoOutput(self._video_item)
 
         self._crop_item: CropRectItem | None = None
 
@@ -503,6 +530,10 @@ class MainWindow(QMainWindow):
         self._video_size = (width, height)
         self._scene.setSceneRect(QRectF(0, 0, width, height))
         self._video_pixmap_item.setPixmap(QPixmap())
+        self._video_pixmap_item.setVisible(False)
+        self._video_item.setVisible(True)
+        self._video_item.setPos(0, 0)
+        self._video_item.setSize(QSizeF(width, height))
 
         side = height if width >= height else width
         x = (width - side) / 2.0
@@ -548,6 +579,8 @@ class MainWindow(QMainWindow):
             self._playback_movie.stop()
             self._playback_movie = None
         self._playback_movie_initialized = False
+        self._video_pixmap_item.setVisible(False)
+        self._video_item.setVisible(True)
         if self._crop_item:
             self._crop_item.setVisible(True)
 
@@ -566,6 +599,8 @@ class MainWindow(QMainWindow):
             self._player.stop()
         except Exception:
             pass
+        self._video_item.setVisible(False)
+        self._video_pixmap_item.setVisible(True)
         if self._crop_item:
             self._crop_item.setVisible(False)
         movie.start()
@@ -583,21 +618,6 @@ class MainWindow(QMainWindow):
             self._scene.setSceneRect(QRectF(0, 0, pixmap.width(), pixmap.height()))
             self._video_view.fit_scene()
             self._playback_movie_initialized = True
-
-    def _on_video_frame_changed(self, frame) -> None:
-        if self._playback_movie:
-            return
-        try:
-            if not frame or not frame.isValid():
-                return
-            image = frame.toImage()
-        except Exception:
-            return
-
-        if image.isNull():
-            return
-
-        self._video_pixmap_item.setPixmap(QPixmap.fromImage(image))
 
     def _current_crop(self) -> CropSpec | None:
         if not self._crop_item or not self._video_size:
