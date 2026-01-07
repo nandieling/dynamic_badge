@@ -57,6 +57,29 @@ ffprobe -version
 .\.venv\Scripts\python .\main.py
 ```
 
+## macOS 打包（Intel / Apple Silicon）
+
+使用 PyInstaller 生成 macOS `.app` 并打包为 zip：
+
+```bash
+# 确保已安装打包工具
+.venv/bin/pip install -U pyinstaller
+
+bash scripts/build_macos.sh
+```
+
+输出：
+
+- `dist/DynamicBadge-macos-x86_64.zip`（Intel）
+- `dist/DynamicBadge-macos-arm64.zip`（Apple Silicon）
+
+说明：
+
+- `x86_64` 包默认会把本项目目录内的 `ffmpeg`/`ffprobe` 一起打进 `.app`（可通过设置 `FFMPEG_X86_64_DIR=/path/to/dir` 指向包含 `ffmpeg` 与 `ffprobe` 的目录）。
+- `arm64` 包默认不内置 `ffmpeg`/`ffprobe`：请在目标 Mac 上自行安装（例如 Homebrew），或在打包前提供 arm64 版二进制：
+  - 方式 1：设置 `FFMPEG_ARM64_DIR=/path/to/dir`（该目录下需包含 `ffmpeg` 与 `ffprobe`）
+  - 方式 2：把 arm64 版放到项目根目录并命名为 `ffmpeg_arm64`、`ffprobe_arm64`
+
 ## 使用说明
 
 1. 点击 **添加视频**，选择视频文件。
