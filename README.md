@@ -32,18 +32,15 @@
 
 ```powershell
 python -m venv .venv
-.\.venv\Scripts\
+.venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-> 如果你使用的是 macOS/Linux，把 `.\.venv\Scripts\...` 改为 `.venv/bin/...`。
+> 如果你使用的是 macOS/Linux，把 `.venv\Scripts\activate` 改为 source .venv/bin/activate。
 
 ## 安装 ffmpeg / ffprobe（Windows）
 
-任选一种方式即可：
-
-1. 把 `ffmpeg.exe` 与 `ffprobe.exe` 直接放到本项目目录（与 `main.py` 同目录）。
-2. 或者把下载ffmpeg，解压，将bin文件放到本项目（与 `main.py`）同目录
+1.或者把下载ffmpeg，解压，将bin文件放到本项目（与 `main.py`）同目录
 
 验证是否安装成功：
 
