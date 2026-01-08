@@ -52,7 +52,6 @@ ffprobe -version
 ## 运行
 
 ```powershell
-.venv\Scripts\activate
 python main.py
 ```
 
