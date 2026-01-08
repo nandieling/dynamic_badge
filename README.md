@@ -26,7 +26,7 @@
 - `PySide6`
 - `ffmpeg` 与 `ffprobe`
   - 需要在 `PATH` 中可直接执行 `ffmpeg`/`ffprobe`
-  - 或者把 `ffmpeg(.exe)`、`ffprobe(.exe)` 放到本项目（与 `main.py`）同目录
+  - 或者把下载ffmpeg，解压，将bin文件放到本项目（与 `main.py`）同目录
 
 ## 安装依赖
 
@@ -43,7 +43,7 @@ pip install -r requirements.txt
 任选一种方式即可：
 
 1. 把 `ffmpeg.exe` 与 `ffprobe.exe` 直接放到本项目目录（与 `main.py` 同目录）。
-2. 安装到系统并加入 `PATH`（例如使用 `winget` / `choco` / 手动下载安装包）。
+2. 或者把下载ffmpeg，解压，将bin文件放到本项目（与 `main.py`）同目录
 
 验证是否安装成功：
 
