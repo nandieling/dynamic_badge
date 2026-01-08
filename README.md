@@ -32,7 +32,8 @@
 
 ```powershell
 python -m venv .venv
-.\.venv\Scripts\pip install -r requirements.txt
+.\.venv\Scripts\
+pip install -r requirements.txt
 ```
 
 > 如果你使用的是 macOS/Linux，把 `.\.venv\Scripts\...` 改为 `.venv/bin/...`。
