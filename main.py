@@ -36,38 +36,46 @@ from PySide6.QtWidgets import (
 
 
 def find_ffmpeg_tool(tool_name: str) -> str | None:
-    for candidate in (tool_name, f"{tool_name}.exe"):
-        found = shutil.which(candidate)
-        if found:
-            return found
-
-    suffixes = ("", ".exe")
+    suffixes = (".exe", "") if sys.platform.startswith("win") else ("", ".exe")
     candidates: list[Path] = []
 
     script_dir = Path(__file__).resolve().parent
+    for suffix in suffixes:
+        candidates.append(script_dir / "ffmpeg_bin" / f"{tool_name}{suffix}")
     for suffix in suffixes:
         candidates.append(script_dir / f"{tool_name}{suffix}")
 
     exe_dir = Path(sys.executable).resolve().parent
     for suffix in suffixes:
+        candidates.append(exe_dir / "ffmpeg_bin" / f"{tool_name}{suffix}")
         candidates.append(exe_dir / f"{tool_name}{suffix}")
+        candidates.append(exe_dir.parent / "Resources" / "ffmpeg_bin" / f"{tool_name}{suffix}")
         candidates.append(exe_dir.parent / "Resources" / f"{tool_name}{suffix}")
+        candidates.append(exe_dir.parent / "Frameworks" / "ffmpeg_bin" / f"{tool_name}{suffix}")
         candidates.append(exe_dir.parent / "Frameworks" / f"{tool_name}{suffix}")
 
     meipass = getattr(sys, "_MEIPASS", None)
     if meipass:
         base = Path(meipass)
         for suffix in suffixes:
-            candidates.append(base / f"{tool_name}{suffix}")
-
-    for prefix in ("/opt/homebrew/bin", "/usr/local/bin"):
-        base = Path(prefix)
-        for suffix in suffixes:
+            candidates.append(base / "ffmpeg_bin" / f"{tool_name}{suffix}")
             candidates.append(base / f"{tool_name}{suffix}")
 
     for path in candidates:
         if path.is_file():
             return str(path)
+
+    for candidate in (tool_name, f"{tool_name}.exe"):
+        found = shutil.which(candidate)
+        if found:
+            return found
+
+    for prefix in ("/opt/homebrew/bin", "/usr/local/bin"):
+        base = Path(prefix)
+        for suffix in suffixes:
+            path = base / f"{tool_name}{suffix}"
+            if path.is_file():
+                return str(path)
     return None
 
 
@@ -517,7 +525,7 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(
                 self,
                 "缺少 ffprobe",
-                "未找到 ffprobe（通常和 ffmpeg 一起安装）。请安装 ffmpeg 并确保 ffprobe 在 PATH 中，或放到程序同目录。",
+                "未找到 ffprobe（通常和 ffmpeg 一起安装）。请将 ffprobe 放到程序目录下的 ffmpeg_bin 文件夹中，或安装 ffmpeg 并确保 ffprobe 在 PATH 中。",
             )
             return
 
@@ -708,7 +716,7 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(
                 self,
                 "缺少 ffmpeg",
-                "未找到 ffmpeg。请安装 ffmpeg 并确保在 PATH 中，或放到程序同目录。",
+                "未找到 ffmpeg。请将 ffmpeg 放到程序目录下的 ffmpeg_bin 文件夹中，或安装 ffmpeg 并确保在 PATH 中。",
             )
             return
 
