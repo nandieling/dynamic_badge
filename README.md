@@ -55,7 +55,8 @@ ffprobe -version
 ## 运行
 
 ```powershell
-.\.venv\Scripts\python .\main.py
+.\.venv\Scripts\
+python main.py
 ```
 
 ## macOS 打包（Intel / Apple Silicon）
@@ -64,7 +65,8 @@ ffprobe -version
 
 ```bash
 # 确保已安装打包工具
-.venv/bin/pip install -U pyinstaller
+.venv/bin/
+pip install -U pyinstaller
 
 bash scripts/build_macos.sh
 ```
@@ -118,7 +120,7 @@ bash scripts/build_macos.sh
 ### 1) 提示找不到 ffmpeg / ffprobe
 
 - 确认 `ffmpeg -version` 和 `ffprobe -version` 在命令行能运行。
-- 或把 `ffmpeg.exe`、`ffprobe.exe` 放到 `main.py` 同目录。
+- 或者把下载ffmpeg，解压，将bin文件放到本项目（与 `main.py`）同目录
 
 ### 2) 预览无法播放/黑屏，但我只想导出
 
