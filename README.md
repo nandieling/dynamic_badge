@@ -52,7 +52,7 @@ ffprobe -version
 ## 运行
 
 ```powershell
-.\.venv\Scripts\
+.venv\Scripts\activate
 python main.py
 ```
 
@@ -62,10 +62,9 @@ python main.py
 
 ```bash
 # 确保已安装打包工具
-.venv/bin/
+source .venv/bin/activate
 pip install -U pyinstaller
-
-bash scripts/build_macos.sh
+scripts/build_macos.sh
 ```
 
 输出：
