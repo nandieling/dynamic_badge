@@ -25,22 +25,24 @@
 - Python 3.10+（推荐 3.11/3.12）
 - `PySide6`
 - `ffmpeg` 与 `ffprobe`
-  - 需要在 `PATH` 中可直接执行 `ffmpeg`/`ffprobe`
-  - 或者把下载ffmpeg，解压，将bin文件放到本项目（与 `main.py`）同目录
+  - 推荐：放到程序目录下的 `ffmpeg_bin/`（Windows 为 `ffmpeg.exe` / `ffprobe.exe`）
+  - 或者安装到系统并确保在 `PATH` 中可直接执行 `ffmpeg`/`ffprobe`
 
 ## 安装依赖
 
 ```powershell
-python -m venv .venv   # 创建虚拟环境
-.venv\Scripts\activate  # 激活虚拟环境
-pip install -r requirements.txt  # 安装依赖库
+python -m venv .venv
+.\.venv\Scripts\pip install -r requirements.txt
 ```
 
-> 如果你使用的是 macOS/Linux，把 `.venv\Scripts\activate` 改为 source .venv/bin/activate。
+> 如果你使用的是 macOS/Linux，把 `.\.venv\Scripts\...` 改为 `.venv/bin/...`。
 
 ## 安装 ffmpeg / ffprobe（Windows）
 
-1.或者把下载ffmpeg，解压，将bin文件放到本项目（与 `main.py`）同目录
+任选一种方式即可：
+
+1. 把 `ffmpeg.exe` 与 `ffprobe.exe` 放到 `ffmpeg_bin/` 目录（与 `main.py` 同级）。
+2. 安装到系统并加入 `PATH`（例如使用 `winget` / `choco` / 手动下载安装包）。
 
 验证是否安装成功：
 
@@ -52,7 +54,7 @@ ffprobe -version
 ## 运行
 
 ```powershell
-python main.py
+.\.venv\Scripts\python .\main.py
 ```
 
 ## macOS 打包（Intel / Apple Silicon）
@@ -61,9 +63,9 @@ python main.py
 
 ```bash
 # 确保已安装打包工具
-source .venv/bin/activate
-pip install -U pyinstaller
-scripts/build_macos.sh
+.venv/bin/pip install -U pyinstaller
+
+bash scripts/build_macos.sh
 ```
 
 输出：
@@ -73,10 +75,21 @@ scripts/build_macos.sh
 
 说明：
 
-- `x86_64` 包默认会把本项目目录内的 `ffmpeg`/`ffprobe` 一起打进 `.app`（可通过设置 `FFMPEG_X86_64_DIR=/path/to/dir` 指向包含 `ffmpeg` 与 `ffprobe` 的目录）。
-- `arm64` 包默认不内置 `ffmpeg`/`ffprobe`：请在目标 Mac 上自行安装（例如 Homebrew），或在打包前提供 arm64 版二进制：
-  - 方式 1：设置 `FFMPEG_ARM64_DIR=/path/to/dir`（该目录下需包含 `ffmpeg` 与 `ffprobe`）
-  - 方式 2：把 arm64 版放到项目根目录并命名为 `ffmpeg_arm64`、`ffprobe_arm64`
+- 打包脚本会把 `ffmpeg_bin/` 内的 `ffmpeg`/`ffprobe` 一起拷贝进 `.app`，运行时不再依赖系统 PATH。
+- 若要分别打包 Intel 与 Apple Silicon：需要在对应架构的 Mac 上执行打包，并确保 `FFMPEG_BIN_DIR`（可选）指向同架构的 `ffmpeg`/`ffprobe` 目录（默认使用本项目的 `ffmpeg_bin/`）。
+
+## Windows 打包（x64）
+
+1. 准备 `ffmpeg_bin\\ffmpeg.exe` 与 `ffmpeg_bin\\ffprobe.exe`（或设置环境变量 `FFMPEG_BIN_DIR` 指向包含它们的目录）。
+2. 运行打包脚本：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\build_windows.ps1
+```
+
+输出：
+
+- `dist/DynamicBadge-windows-x64.zip`（解压后运行 `DynamicBadge.exe`，无需另装 ffmpeg）
 
 ## 使用说明
 
@@ -115,7 +128,7 @@ scripts/build_macos.sh
 ### 1) 提示找不到 ffmpeg / ffprobe
 
 - 确认 `ffmpeg -version` 和 `ffprobe -version` 在命令行能运行。
-- 或者把下载ffmpeg，解压，将bin文件放到本项目（与 `main.py`）同目录
+- 或把 `ffmpeg`/`ffprobe`（Windows 为 `.exe`）放到程序目录下的 `ffmpeg_bin/`。
 
 ### 2) 预览无法播放/黑屏，但我只想导出
 
