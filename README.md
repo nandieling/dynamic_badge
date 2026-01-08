@@ -31,9 +31,9 @@
 ## 安装依赖
 
 ```powershell
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
+python -m venv .venv   # 创建虚拟环境
+.venv\Scripts\activate  # 激活虚拟环境
+pip install -r requirements.txt  # 安装依赖库
 ```
 
 > 如果你使用的是 macOS/Linux，把 `.venv\Scripts\activate` 改为 source .venv/bin/activate。
