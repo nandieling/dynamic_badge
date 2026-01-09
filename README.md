@@ -64,7 +64,7 @@ python main.py
 
 ```bash
 # 确保已安装打包工具
-.venv/bin/pip install -U pyinstaller
+pip install -U pyinstaller
 
 bash scripts/build_macos.sh
 ```
