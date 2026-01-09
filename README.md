@@ -85,7 +85,7 @@ bash scripts/build_macos.sh
 2. 运行打包脚本：
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File scripts\build_windows.ps1
+powershell scripts\build_windows.ps1
 ```
 
 输出：
