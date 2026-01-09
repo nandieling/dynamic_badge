@@ -42,8 +42,8 @@ pip install -r requirements.txt # 安装依赖
 
 任选一种方式即可：
 
-1. 把 `ffmpeg.exe` 与 `ffprobe.exe` 放到 `ffmpeg_bin/` 目录（与 `main.py` 同级）。
-2. 安装到系统并加入 `PATH`（例如使用 `winget` / `choco` / 手动下载安装包）。
+1. 把下载的ffmpeg解压，bin文件夹下的文件复制到 `ffmpeg_bin/` 目录（与 `main.py` 同级）。
+2. 或者安装ffmpeg到系统并加入 `PATH`（例如使用 `winget` / `choco` / 手动下载安装包）。
 
 验证是否安装成功：
 
