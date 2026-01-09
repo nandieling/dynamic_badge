@@ -55,7 +55,7 @@ ffprobe -version
 ## 运行
 
 ```powershell
-.\.venv\Scripts\python .\main.py
+python main.py
 ```
 
 ## macOS 打包（Intel / Apple Silicon）
