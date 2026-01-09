@@ -31,11 +31,12 @@
 ## 安装依赖
 
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\pip install -r requirements.txt
+python -m venv .venv  # 安装虚拟环境
+.venv\Scripts\activate  # 激活虚拟环境
+pip install -r requirements.txt # 安装依赖
 ```
 
-> 如果你使用的是 macOS/Linux，把 `.\.venv\Scripts\...` 改为 `.venv/bin/...`。
+> 如果你使用的是 macOS/Linux，把 `.venv\Scripts\activate` 改为 `.venv/bin/...`。
 
 ## 安装 ffmpeg / ffprobe（Windows）
 
